@@ -1,0 +1,16 @@
+{
+  "name": "termo-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main":"index.js",
+  "engine": "17.4.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^13.1.3"
+  }
+}
