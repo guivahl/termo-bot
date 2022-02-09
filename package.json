@@ -2,7 +2,7 @@
   "name": "termo-bot",
   "version": "1.0.0",
   "description": "",
-  "main":"index.js",
+  "main": "index.js",
   "engine": "17.4.0",
   "scripts": {
     "start": "node index.js"
@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.0",
+    "knex": "^1.0.2",
+    "pg": "^8.7.3",
     "puppeteer": "^13.1.3"
   }
 }
