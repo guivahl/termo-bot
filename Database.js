@@ -9,15 +9,6 @@ const knexConfig = {
     connection: process.env.DATABASE_CONNECTION
 }
 
-const example = [
-    { letter: 'e', position: 0, accurate: 'place' },
-    { letter: 'n', position: 1, accurate: 'wrong' },
-    { letter: 't', position: 2, accurate: 'wrong' },
-    { letter: 'r', position: 3, accurate: 'place' },
-    { letter: 'e', position: 4, accurate: 'wrong' }
-  ]
-  
-
 class Database {
     async connect(config = knexConfig) {
         this.knex = await knex(knexConfig)
@@ -33,8 +24,8 @@ class Database {
         return ortografia
     }
 
-    async fetchNewWord (attempts) { 
-        const placeLetters = attempts.reduce((acc, attempt) => {
+    async fetchNewWord (attempts, wordLength) { 
+        const sqlWhereQuery = attempts.reduce((acc, attempt) => {
             const [letters] = Object.values(attempt)
 
             const right = letters.filter(({ accurate }) => accurate === 'right')
@@ -45,28 +36,28 @@ class Database {
                 !place.find(place => place.letter === letter)
             )
 
-            if (right.length > 0) acc.right.push(...right)
-            if (place.length > 0) acc.place.push(...place)
-            if (wrong.length > 0) acc.wrong.push(...wrong)
+            const rightQuery = right.length > 0 ? right.reduce((acc, right) => acc.concat(`${rightLetterQuery(right.letter, right.position)}`), '') : '' 
 
-            return acc
-        }, {
-            right: [],
-            place: [],
-            wrong: []
-        })
+            const placeQuery = place.length > 0 ? place.reduce((acc, place) => acc.concat(`${placeLetterQuery(place.letter, place.position)}`), '') : ''
 
-        console.log(placeLetters)
+            const wrongQuery = wrong.length > 0 ? wrong.reduce((acc, wrong) => acc.concat(`${wrongLetterQuery(wrong.letter)}`), '') : ''
 
-        const [{ ortografia }] = await this
+            return acc.concat(rightQuery, placeQuery, wrongQuery)  
+        }, `nb_letras = '${wordLength}' AND ortografia ~ '^[[:alnum:]]+$' `)
+
+        const [{ ortografia = '' }] = await this
             .knex('words')
-            .where('nb_letras', `${wordLength}`)
-            .andWhereRaw()
+            .select(this.knex.raw('UNACCENT(ortografia) as ortografia'))
+            .whereRaw(sqlWhereQuery)
             .orderByRaw('CAST(freq_orto AS INT) DESC')
             .limit(1)
-
+        
         return ortografia
     }
 }
+
+const rightLetterQuery = (letter, position) => `AND SUBSTRING(UNACCENT(ortografia), ${position + 1}, 1) = '${letter}' `
+const placeLetterQuery = (letter, position) => `AND UNACCENT(ortografia) LIKE '%${letter}%' AND SUBSTRING(UNACCENT(ortografia), ${position + 1}, 1) != '${letter}' `
+const wrongLetterQuery = (letter) => `AND UNACCENT(ortografia) NOT LIKE '%${letter}%' `
 
 module.exports = Database

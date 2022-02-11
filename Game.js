@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer')
 
+const WORD_LENGTH = 5
+
 const defaultOptions = { 
     headless: false,
     slowMo: 250
@@ -13,7 +15,7 @@ const checksLetter = str => {
 }
 
 class Game {
-    constructor(wordLength = 5) {
+    constructor(wordLength = WORD_LENGTH) {
         this.wordLength = wordLength
 
         this.words = []
@@ -61,6 +63,18 @@ class Game {
         this.attempts.push({ [this.attempts.length]: attempt })
 
         return attempt
+    }
+
+    getWordLength () {
+        return this.wordLength
+    }
+
+    getAttempts () {
+        return this.attempts
+    }
+
+    isAttemptRight (attempt) {
+        return attempt.every(({ accurate }) => accurate = 'right')
     }
 
     async end () {
