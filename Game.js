@@ -72,9 +72,13 @@ class Game {
     getAttempts () {
         return this.attempts
     }
+    
+    getWords () {
+        return this.words
+    }
 
     isAttemptRight (attempt) {
-        return attempt.every(({ accurate }) => accurate = 'right')
+        return attempt.every(({ accurate }) => accurate === 'right')
     }
 
     async end () {

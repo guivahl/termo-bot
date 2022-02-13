@@ -16,8 +16,8 @@ const main = async () => {
 
     console.log(`Primeira palavra: ${word}`)
 
-    while (game.isAttemptRight(attempt) && game.getAttempts().length < ATTEMPTS_AVAILABLE) {
-        word = await database.fetchNewWord(game.getAttempts(), game.getWordLength())
+    while (!game.isAttemptRight(attempt) && game.getAttempts().length < ATTEMPTS_AVAILABLE) {
+        word = await database.fetchNewWord(game.getAttempts(), game.getWords(), game.getWordLength())
 
         console.log(`Próxima palavra: ${word}`)
 

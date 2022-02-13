@@ -24,7 +24,9 @@ class Database {
         return ortografia
     }
 
-    async fetchNewWord (attempts, wordLength) { 
+    async fetchNewWord (attempts, words, wordLength) { 
+        const alreadyFetchedWords = words.reduce((acc, word) => acc ? `${acc},'${word}'` : `'${word}'`, '')
+
         const sqlWhereQuery = attempts.reduce((acc, attempt) => {
             const [letters] = Object.values(attempt)
 
@@ -33,7 +35,8 @@ class Database {
 
             const wrong = letters.filter(({ accurate, letter }) => 
                 accurate === 'wrong' && 
-                !place.find(place => place.letter === letter)
+                !place.find(place => place.letter === letter) && 
+                !right.find(right => right.letter === letter)
             )
 
             const rightQuery = right.length > 0 ? right.reduce((acc, right) => acc.concat(`${rightLetterQuery(right.letter, right.position)}`), '') : '' 
@@ -43,7 +46,7 @@ class Database {
             const wrongQuery = wrong.length > 0 ? wrong.reduce((acc, wrong) => acc.concat(`${wrongLetterQuery(wrong.letter)}`), '') : ''
 
             return acc.concat(rightQuery, placeQuery, wrongQuery)  
-        }, `nb_letras = '${wordLength}' AND ortografia ~ '^[[:alnum:]]+$' `)
+        }, `nb_letras = '${wordLength}' AND UNACCENT(ortografia) NOT IN (${alreadyFetchedWords}) AND ortografia ~ '^[[:alnum:]]+$' `)
 
         const [{ ortografia = '' }] = await this
             .knex('words')
