@@ -24,7 +24,7 @@ const main = async () => {
         attempt = await game.attempt(word)
     }
 
-    game.isAttemptRight(attempt) ? console.log(`\nPalavra certa: ${word}! Tentativas: ${game.getAttempts().length + 1}!`) : console.log(`As chances acabaram :(`)
+    game.isAttemptRight(attempt) ? console.log(`\nPalavra certa: ${word}! Tentativas: ${game.getAttempts().length}!`) : console.log(`As chances acabaram :(`)
 
     await game.end()
 }
