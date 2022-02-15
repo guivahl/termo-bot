@@ -25,7 +25,7 @@ class Game {
     async init(options = defaultOptions) {
         this.browser = await puppeteer.launch({ 
             headless: false,
-            slowMo: 250
+            slowMo: 200
          })
 
         this.context = await this.browser.createIncognitoBrowserContext()
@@ -47,8 +47,8 @@ class Game {
             return el.innerHTML
         })
     
-        const awnsers = value.replace(/\s\s+/g, '').split('/div>').filter(Boolean)
-    
+        const awnsers = value.replace(/\n|\s\s+/g, '').split('/div>').filter(Boolean)
+
         const attempt = awnsers.map((awnser, index) => {
             const accurate = checksLetter(awnser)
 
