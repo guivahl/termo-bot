@@ -1,7 +1,9 @@
 const Game = require('./Game.js')
 const Database = require('./Database.js')
+const tweet = require('./tweet.js')
 
 const ATTEMPTS_AVAILABLE = 6
+const SHOULD_TWEET = false
 
 const main = async () => {
     const database = new Database()
@@ -25,6 +27,8 @@ const main = async () => {
     }
 
     game.isAttemptRight(attempt) ? console.log(`\nPalavra certa: ${word}! Tentativas: ${game.getAttempts().length}!`) : console.log(`As chances acabaram :(`)
+
+    if (SHOULD_TWEET && game.isAttemptRight(attempt)) await tweet(game.getAttempts(), ATTEMPTS_AVAILABLE)
 
     await game.end()
 }
