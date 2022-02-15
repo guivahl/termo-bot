@@ -2,7 +2,7 @@ const path = require('path')
 const knex = require('knex')
 const env = require('dotenv')
 
-env.config()
+env.config('../')
 
 const knexConfig = {
     client: 'pg',
