@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const iPhone = puppeteer.devices['iPhone 6']
 
 const WORD_LENGTH = 5
 
@@ -13,6 +14,8 @@ const checksLetter = str => {
     
     return 'right'
 }
+
+const delay = (time = 2000) => new Promise((resolve, reject) => setTimeout(resolve, time))
 
 class Game {
     constructor(wordLength = WORD_LENGTH) {
@@ -31,6 +34,8 @@ class Game {
         this.context = await this.browser.createIncognitoBrowserContext()
 
         this.page = await this.context.newPage()
+        
+        await this.page.emulate(iPhone)
 
         await this.page.goto('https://term.ooo/')
         
@@ -41,23 +46,19 @@ class Game {
         await this.page.keyboard.type(word)
         await this.page.keyboard.press('Enter')
 
-        const element = await this.page.waitForSelector(`[aria-label="palavra ${this.attempts.length + 1}"]`)
+        await delay()
 
-        const value = await element.evaluate(el => {
-            return el.innerHTML
-        })
-    
-        const awnsers = value.replace(/\n|\s\s+/g, '').split('/div>').filter(Boolean)
+        const timestamp = Date.now()
 
-        const attempt = awnsers.map((awnser, index) => {
-            const accurate = checksLetter(awnser)
-
-            return {
-                letter: word[index],
-                position: index,
-                accurate
+        await this.page.screenshot({ 
+            path: `screenshots/attempt_${this.attempts.length + 1}_${timestamp}.png`,
+            clip: {
+                x: 0,
+                y: 100,
+                width: 375,
+                height: 400
             }
-        })
+        });
         
         this.words.push(word)
         this.attempts.push({ [this.attempts.length]: attempt })
