@@ -559,6 +559,11 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
 
+twitter-api-v2@^1.10.3:
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/twitter-api-v2/-/twitter-api-v2-1.10.3.tgz#07441bd9c4d27433aa0284d900cf60f6328b8239"
+  integrity sha512-AbCboiTOWv4DUPbAlF43Uyk4iK/QRk354pNdKgtOmv45+BWGB5Kdv6ls+C99pww/DyLBiXgQEnuyGv4d1HdRhw==
+
 unbzip2-stream@1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/unbzip2-stream/-/unbzip2-stream-1.4.3.tgz#b0da04c4371311df771cdc215e87f2130991ace7"
