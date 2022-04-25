@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.0",
+    "jimp": "^0.16.1",
     "knex": "^1.0.2",
     "pg": "^8.7.3",
     "puppeteer": "^13.1.3",
