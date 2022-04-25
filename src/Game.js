@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer')
 const iPhone = puppeteer.devices['iPhone 6']
 
+const { getWordAccurate, removeFile } = require('./image.js')
+
 const WORD_LENGTH = 5
 
 const defaultOptions = { 
@@ -49,9 +51,11 @@ class Game {
         await delay()
 
         const timestamp = Date.now()
+        
+        const filename = `screenshots/attempt_${this.attempts.length + 1}_${timestamp}.png`
 
         await this.page.screenshot({ 
-            path: `screenshots/attempt_${this.attempts.length + 1}_${timestamp}.png`,
+            path: filename,
             clip: {
                 x: 0,
                 y: 100,
@@ -59,9 +63,25 @@ class Game {
                 height: 400
             }
         });
+
+        const qtdAttempts = this.getAttempts().length
+        const wordLength = this.getWordLength()
+
+        const accuracy = await getWordAccurate(filename, qtdAttempts, wordLength)
         
+        const attempt = Array.from({ length: this.wordLength }).map((_, index) => {
+
+            return {
+                letter: word[index],
+                position: index,
+                accurate: accuracy[index]
+            }
+        })
+
         this.words.push(word)
         this.attempts.push({ [this.attempts.length]: attempt })
+
+        removeFile(filename)
 
         return attempt
     }
